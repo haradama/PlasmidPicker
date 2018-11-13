@@ -1,1 +1,7 @@
 # PlasmidPicker
+
+## Installation
+
+## Usage
+
+## License
