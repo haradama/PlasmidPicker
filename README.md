@@ -27,7 +27,7 @@ Options:
 ```
 Usage: plasmidpicker classify [OPTIONS]
 
-  Perform similarity search of plasmids using MinHash
+  Perform similarity search of plasmids using MinHash.
 
 Options:
   -i, --infile TEXT        Specify FASTA input file
