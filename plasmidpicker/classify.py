@@ -7,7 +7,7 @@ import h5py
 import os
 
 class Classify(MinHash):
-    def __init__(self, sketch=1000):
+    def __init__(self, sketch):
         MinHash.__init__(sketch)
         db_path = os.path.dirname(__file__) + "/data/plasmids_hash.h5"
         self.sketch = sketch
@@ -23,7 +23,7 @@ class Classify(MinHash):
         minhash_array = self.getMin(seq)
         similarity_dict = dict()
         for key, refminhash_array in self.ref_plasmids.items():
-            similarity = self.getSim(minhash_array, refminhash_array)
+            similarity = self.getSim(minhash_array, refminhash_array[:self.sketch])
             if similarity:
                 similarity_dict[key] = similarity
 
