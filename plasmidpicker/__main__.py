@@ -3,7 +3,6 @@
 import click
 from plasmidpicker.pick import Pick
 from plasmidpicker.classify import Classify
-import os
 
 @click.group()
 def cmd():
@@ -22,11 +21,11 @@ def pick(infile, threshold, length, outdir=None):
 @click.option("-i", "--infile", help="Specify FASTA input file")
 @click.option("-s", "--sketch", default=1000, type=int, help="Sketch size (<1000) [1000]")
 @click.option("-l", "--length", default=1000, type=int, help="Threshold of contig's length [1000]")
-@click.option("-hi", "--hits_num", default=5, type=int, help="Number of hits to display [5]")
+@click.option("-hi", "--hits", default=5, type=int, help="Number of hits to display [5]")
 @click.option("-o", "--outfile", default="result.txt", help="Output file [result.txt]")
-def classify(infile, sketch, outfile, length, hits_num):
-    classifier = Classify(num=sketch)
-    classifier.getSimandWrite(infile, outfile, hits_num)
+def classify(infile, sketch, outfile, length, hits):
+    classifier = Classify(sketch)
+    classifier.getSimandWrite(infile, outfile, hits)
 
 def main():
     cmd()

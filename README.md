@@ -1,5 +1,13 @@
 # PlasmidPicker
 
+## Requirements
+- numpy
+- cython
+- biopython
+- click
+- mmh3
+- h5py
+
 ## Installation
 
 ```
