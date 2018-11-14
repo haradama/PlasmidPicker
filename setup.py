@@ -20,7 +20,7 @@ setup(
     url = "https://github.com/haradama/PlasmidPicker",
     description = "This tool was developed to detect plasmid sequence data in the metagenome.",
     cmdclass = {"build_ext": build_ext},
-    ext_modules = cythonize("PlasmidPicker/core.pyx"),
+    ext_modules = cythonize("plasmidpicker/core.pyx"),
     entry_points = {
         "console_scripts":[
             "plasmidpicker = plasmidpicker.__main__:main",
