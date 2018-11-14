@@ -3,7 +3,7 @@
 ## Installation
 
 ```
-git clone git@github.com:haradama/PlasmidPicker.git
+git clone https://github.com/haradama/PlasmidPicker.git
 cd PlasmidPicker
 pip install -r requirements.txt
 python setup.py install
