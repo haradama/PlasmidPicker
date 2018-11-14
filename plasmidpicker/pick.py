@@ -31,6 +31,7 @@ class Pick(CGR):
         if outdir is None:
             outdir = os.getcwd()
         os.chdir(outdir)
+        infile = os.path.abspath(infile)
 
         with open("plasmids{0}.fna".format(nowtime), "w") as fpl, open("chromosomes{0}.fna".format(nowtime), "w") as fch, open("unassigned{0}.fna".format(nowtime), "w") as fun:
             file_format = "fasta"

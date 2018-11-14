@@ -4,10 +4,11 @@ from plasmidpicker.core  import MinHash
 from Bio import SeqIO
 import numpy as np
 import h5py
+import os
 
 class Classify(MinHash):
     def __init__(self, sketch=1000):
-        MinHash.__init__(sketch, k_length)
+        MinHash.__init__(sketch)
         db_path = os.path.dirname(__file__) + "/data/plasmids_hash.h5"
         self.sketch = sketch
         self.ref_plasmids = dict()
