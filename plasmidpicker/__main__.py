@@ -8,20 +8,24 @@ from plasmidpicker.classify import Classify
 def cmd():
     pass
 
-@cmd.command()
-@click.option('--infile', help='Prefix of greetings.')
-@click.option('--threshold', default=70, type=int, help='Prefix of greetings.')
-@click.option('--length', default=1000, type=int, help='Prefix of greetings.')
-def pick():
-    click.echo('Hello, World!')
+@cmd.command(help="Detect plasmid sequence data in metagenome.")
+@click.option("-i", "--infile", help="Specify FASTA input file")
+@click.option("-t", "--threshold", default=70, type=int, help="Threshold of probability [70]")
+@click.option("-l", "--length", default=1000, type=int, help="Threshold of contig's length [1000]")
+@click.option("-d", "--outdir", help="Output directory [.]")
+def pick(infile, threshold, length, outdir=None):
+    picker = Pick()
+    picker.extractPlasmidSeq(infile, threshold, length, outdir)
 
-@cmd.command()
-@click.option('--infile', help='Prefix of greetings.')
-@click.option('--prefix', default=1000, help='Prefix of greetings.')
-@click.option('--num', default=1000, type=int, help='Prefix of greetings.')
-@click.option('--output', default=70, help='Prefix of greetings.')
-def classify():
-    click.echo('Konnichiwa, Sekai!')
+@cmd.command(help="Perform similarity search of plasmids using MinHash")
+@click.option("-i", "--infile", help="Specify FASTA input file")
+@click.option("-s", "--sketch", default=1000, type=int, help="Sketch size (<1000) [1000]")
+@click.option("-l", "--length", default=1000, type=int, help="Threshold of contig's length [1000]")
+@click.option("-hi", "--hits_num", default=5, type=int, help="Number of hits to display [5]")
+@click.option("-o", "--outfile", default="result.txt", help="Output file [result.txt]")
+def classify(infile, sketch, outfile, length, hits_num):
+    classifier = Classify(num=sketch)
+    classifier.getSimandWrite(infile, outfile, hits_num)
 
 def main():
     cmd()

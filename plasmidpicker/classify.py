@@ -6,8 +6,9 @@ import numpy as np
 import h5py
 
 class Classify(MinHash):
-    def __init__(self, num=1000, k_length=16, db_path="../data/plasmidDB.h5"):
+    def __init__(self, num=1000, k_length=16):
         MinHash.__init__(num, k_length)
+        db_path="../data/plasmidDB.h5"
         self.num = num
         self.ref_plasmids = dict() 
         with h5py.File(db_path, "r") as h5f:
@@ -17,7 +18,7 @@ class Classify(MinHash):
     def getSim(self, array1, array2):
         return (array1 == array2).sum() / self.num
     
-    def getSimwithRef(self, seq, hits_num=5):
+    def getSimwithRef(self, seq, hits_num):
         minhash_array = self.getMin(seq)
         similarity_dict = dict()
         for key, refminhash_array in self.ref_plasmids.items():
@@ -30,12 +31,12 @@ class Classify(MinHash):
                 break
             yield (key, value)
     
-    def write(self, infile, txtfile):
-        with open(txtfile, "w") as fw:
+    def getSimandWrite(self, infile, outfile, hits_num):
+        with open(outfile, "w") as fw:
             file_format = "fasta"
             for record in SeqIO.parse(infile, file_format):
                 fw.write("# {0}\n".format(record.id))
-                for key, value in self.getSimwithRef(str(record.seq)):
+                for key, value in self.getSimwithRef(str(record.seq), hits_num):
                     fw.write("{0}\t{1}\n".format(key, value))
 
 
