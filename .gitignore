@@ -2,3 +2,7 @@
 *.fna
 *.faa
 *.fa
+build
+dist
+PlasmidPicker.egg-info
+*.c

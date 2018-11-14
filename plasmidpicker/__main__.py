@@ -3,6 +3,7 @@
 import click
 from plasmidpicker.pick import Pick
 from plasmidpicker.classify import Classify
+import os
 
 @click.group()
 def cmd():
@@ -17,7 +18,7 @@ def pick(infile, threshold, length, outdir=None):
     picker = Pick()
     picker.extractPlasmidSeq(infile, threshold, length, outdir)
 
-@cmd.command(help="Perform similarity search of plasmids using MinHash")
+@cmd.command(help="Perform similarity search of plasmids using MinHash.")
 @click.option("-i", "--infile", help="Specify FASTA input file")
 @click.option("-s", "--sketch", default=1000, type=int, help="Sketch size (<1000) [1000]")
 @click.option("-l", "--length", default=1000, type=int, help="Threshold of contig's length [1000]")

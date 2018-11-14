@@ -13,22 +13,22 @@ ctypedef np.float_t DTYPE_FLOAT_t
 
 cdef class CGR:
     """
-    
+
     """
     cdef int k, array_size, num_kmers
     cdef np.ndarray cgr_array
-    def __cinit__(self, int k_length):        
+    def __cinit__(self, int k_length=7):
         self.k = k_length
         self.array_size = int((4**self.k)**0.5)
         self.cgr_array = np.zeros((self.array_size, self.array_size), dtype=DTYPE_INT)
         self.num_kmers = 0
-    
+
     def __len__(self):
         return self.num_kmers
-    
+
     cpdef void add_kmer(self, str kmer):
         assert len(kmer) == self.k, "The added kmer is not a {0}-mer but a {1}-mer".format(str(self.k), str(len(kmer)))
-        
+
         cdef str nucl
         cdef int index, maxX, maxY, locX, locY
         if 'N' not in kmer:
@@ -51,13 +51,13 @@ cdef class CGR:
             maxX, maxY = self.array_size, self.array_size
             locX, locY = 1, 1
             self.num_kmers += 1
-            
+
     cpdef np.ndarray[DTYPE_FLOAT_t, ndim=2] get_cgr_array(self):
         if self.num_kmers == 0:
             return self.cgr_array
         else:
             return self.cgr_array / self.num_kmers
-    
+
     cpdef void add_seq(self, str seq):
         cdef int index
         self.cgr_array = np.zeros((self.array_size, self.array_size), dtype=DTYPE_INT)
@@ -97,14 +97,14 @@ cdef class DenoisedCGR(CGR):
     def __cinit__(self, int k_length):
         CGR.__init__(k_length)
         self.kmer_set = set()
-        
+
     cpdef void add(self, str kmer):
         assert len(kmer) == self.k, "The added kmer is not a {0}-mer but a {1}-mer".format(str(self.k), str(len(kmer)))
         if kmer in self.kmer_set:
             self.add_kmer(kmer)
         else:
             self.kmer_set.add(kmer)
-            
+
     cpdef void add_seq(self, str seq):
         cdef int index
         self.cgr_array = np.zeros((self.array_size, self.array_size), dtype=DTYPE_INT)
@@ -120,25 +120,25 @@ def kmerIter(str seq, int k_length):
 
 cdef class MinHash:
     cdef int num, k_length
-    def __cinit__(self, int _num, int _k_length):
-        self.num = _num
+    def __cinit__(self, int _sketch=1000, int _k_length=16):
+        self.sketch = _sketch
         self.k_length = _k_length
-    
+
     cpdef np.ndarray[double, ndim=2] getMin(self, str seq):
         cdef str kmer
         cdef int i, j, kmer_num
         kmer_num = len(seq) - (self.k_length - 1)
-        cdef np.ndarray[double, ndim=2] hash_matrix = np.empty((self.num, kmer_num), dtype=np.double)
-        
+        cdef np.ndarray[double, ndim=2] hash_matrix = np.empty((self.sketch, kmer_num), dtype=np.double)
+
         for i in range(kmer_num):
             kmer = seq[i:i+self.k_length]
-            for j in range(self.num):
+            for j in range(self.sketch):
                 hash_matrix[j, i] = hash128(kmer, j)
-        
+
         return hash_matrix.min(axis=1)
-    
+
     cpdef double get_concordance(self, np.ndarray[double, ndim=1] array1, np.ndarray[double, ndim=1] array2):
-        return (array1 == array2).sum() / self.num
+        return (array1 == array2).sum() / self.sketch
 
 cpdef double get_GC_content(str seq):
     return (seq.count("G") + seq.count("C")) / len(seq)

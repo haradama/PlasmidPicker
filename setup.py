@@ -27,6 +27,8 @@ setup(
         ],
     },
     packages =["plasmidpicker"],
+    package_data={"": ["data/param.json", "data/plasmids_hash.h5"]},
+    include_package_data=True,
     install_requires = install_requires,
     include_dirs = [numpy.get_include()]
 )

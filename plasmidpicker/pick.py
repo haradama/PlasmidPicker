@@ -11,22 +11,22 @@ import os
 class Pick(CGR):
     def __init__(self, k_length=7):
         CGR.__init__(k_length)
-        param_path="../data/param.json"
+        param_path = os.path.dirname(__file__) + "/data/param.json"
         with open(param_path, "r") as fr:
             param = json.loads(fr.read())
         self.weights = param["weights"]
         self.bias = param["bias"]
-        
+
     def logisticRegression(self, cgr_array):
         z = np.dot(cgr_array, self.weights)
         return 1.0 / (1 + np.exp(-z)) + self.bias
-    
+
     def catSeqwithRCSeq(self, seq):
         return seq + Seq("N") + seq.reverse_complement()
-    
+
     def extractPlasmidSeq(self, infile, threshold=70, length=1000, outdir=None):
         assert infile.endswith(".fasta") or infile.endswith(".fna") or infile.endswith(".fa"), "Your input file must be in .fa, .fna or .fasta format."
-        
+
         nowtime = datetime.today().strftime("%Y%m%d%H%M%S")
         if outdir is None:
             outdir = os.getcwd()
