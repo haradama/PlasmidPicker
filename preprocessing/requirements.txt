@@ -1,0 +1,6 @@
+#plasmidpicker
+click
+biopython
+numpy
+tqdm
+h5py
