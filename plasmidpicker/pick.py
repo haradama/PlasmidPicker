@@ -17,14 +17,14 @@ class Pick(CGR):
         self.weights = param["weights"]
         self.bias = param["bias"]
 
-    def logisticRegression(self, cgr_array):
+    def logistic_regression(self, cgr_array):
         z = np.dot(cgr_array, self.weights)
         return 1.0 / (1 + np.exp(-z)) + self.bias
 
-    def catSeqwithRCSeq(self, seq):
+    def cat_with_reverse_complement(self, seq):
         return seq + Seq("N") + seq.reverse_complement()
 
-    def extractPlasmidSeq(self, infile, threshold=70, length=1000, outdir=None):
+    def pick_plasmid(self, infile, threshold=70, length=1000, outdir=None):
         assert infile.endswith(".fasta") or infile.endswith(".fna") or infile.endswith(".fa"), "Your input file must be in .fa, .fna or .fasta format."
 
         nowtime = datetime.today().strftime("%Y%m%d%H%M%S")
@@ -38,17 +38,19 @@ class Pick(CGR):
             threshold *= 0.01
             for record in SeqIO.parse(infile, file_format):
                 if len(record.seq) >= length:
-                    self.add_seq(str(self.catSeqwithRCSeq(record.seq)))
+                    self.add_seq(str(self.cat_with_reverse_complement(record.seq)))
                     cgr_array = self.get_cgr_array()
-                    probability = self.logisticRegression(cgr_array.flatten())
+                    probability = self.logistic_regression(cgr_array.flatten())
                     record.description += " p={0}".format(str(round(probability, 3)))
 
                     if probability >= threshold:
-                        SeqIO.write(record, fpl, file_format)
+                        f = fpl
                     elif probability <= (1 - threshold):
-                        SeqIO.write(record, fch, file_format)
+                        f = fch
                     else:
-                        SeqIO.write(record, fun, file_format)
+                        f = fun
+
+                    SeqIO.write(record, f, file_format)
 
 
 if __name__ == "__main__":

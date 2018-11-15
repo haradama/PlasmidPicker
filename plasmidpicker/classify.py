@@ -16,14 +16,14 @@ class Classify(MinHash):
             for key in h5f.keys():
                 self.ref_plasmids[key] = h5f[key].value
 
-    def getSim(self, array1, array2):
+    def get_similarity(self, array1, array2):
         return (array1 == array2).sum() / self.sketch
 
-    def getSimwithRef(self, seq, hits):
-        minhash_array = self.getMin(seq)
+    def get_similarity_with_reference(self, seq, hits):
+        minhash_array = self.get_minhash_value(seq)
         similarity_dict = dict()
         for key, refminhash_array in self.ref_plasmids.items():
-            similarity = self.getSim(minhash_array, refminhash_array[:self.sketch])
+            similarity = self.get_similarity(minhash_array, refminhash_array[:self.sketch])
             if similarity:
                 similarity_dict[key] = similarity
 
@@ -32,12 +32,12 @@ class Classify(MinHash):
                 break
             yield (key, value)
 
-    def getSimandWrite(self, infile, outfile, hits):
+    def output_similarity(self, infile, outfile, hits):
         with open(outfile, "w") as fw:
             file_format = "fasta"
             for record in SeqIO.parse(infile, file_format):
                 fw.write("# {0}\n".format(record.id))
-                for key, value in self.getSimwithRef(str(record.seq), hits):
+                for key, value in self.get_similarity_with_reference(str(record.seq), hits):
                     fw.write("{0}\t{1}\n".format(key, value))
 
 

@@ -124,7 +124,7 @@ cdef class MinHash:
         self.sketch = _sketch
         self.k_length = _k_length
 
-    cpdef np.ndarray[double, ndim=2] getMin(self, str seq):
+    cpdef np.ndarray[double, ndim=2] get_minhash_value(self, str seq):
         cdef str kmer
         cdef int i, j, kmer_num
         kmer_num = len(seq) - (self.k_length - 1)
