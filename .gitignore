@@ -6,3 +6,4 @@ build
 dist
 PlasmidPicker.egg-info
 *.c
+plasmidpicker/__pycache__
