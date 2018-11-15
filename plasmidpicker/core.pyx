@@ -119,7 +119,7 @@ def kmerIter(str seq, int k_length):
         yield fragment
 
 cdef class MinHash:
-    cdef int num, k_length
+    cdef int sketch, k_length
     def __cinit__(self, int _sketch=1000, int _k_length=16):
         self.sketch = _sketch
         self.k_length = _k_length

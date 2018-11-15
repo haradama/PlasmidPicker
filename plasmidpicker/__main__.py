@@ -19,7 +19,7 @@ def pick(infile, threshold, length, outdir=None):
     if threshold < 0 or threshold > 100:
         raise click.BadParameter("Threshold of probability (0 <= t <= 100) [70]")
     picker = Pick()
-    picker.pick_plasmid((infile, threshold, length, outdir)
+    picker.pick_plasmid(infile, threshold, length, outdir)
 
 @cmd.command(help="Perform similarity search of plasmids using MinHash.")
 @click.option("-i", "--infile", help="Specify FASTA input file")
