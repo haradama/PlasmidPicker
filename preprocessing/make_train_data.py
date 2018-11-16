@@ -8,9 +8,9 @@ from glob import glob
 from tqdm import tqdm
 
 @click.command()
-@click.option("-i", "--indir", default=".", help="Specify FASTA input file [.]")
-@click.option("-k", "--kmer", default=7, type=int, help="Threshold of probability (0 < k) [7]")
-@click.option("-o", "--outfile", default=".", help="Threshold of probability [.]")
+@click.option("-i", "--indir", default=".", help="Intput directory [.]")
+@click.option("-k", "--kmer", default=7, type=int)
+@click.option("-o", "--outfile", default=".", help="Output directory [.]")
 def cmd(indir, kmer, outfile):
     fna_files = glob(indir + "/*.fna")
     fasta_files = glob(indir + "/*.fasta")
@@ -24,7 +24,8 @@ def cmd(indir, kmer, outfile):
     for index, infile in enumerate(pbar):
         pbar.set_description(infile)
         record = SeqIO.read(infile, file_format)
-        cgr.add_seq(str(record.seq))
+
+        cgr.add_seq(str(seq + Seq("N") + seq.reverse_complement()))
         cgr_array = cgr.get_cgr_array()
 
         if index == 0:
