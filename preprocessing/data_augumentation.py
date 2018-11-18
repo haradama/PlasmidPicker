@@ -3,6 +3,7 @@
 import click
 from Bio.SeqRecord import SeqRecord
 from glob import glob
+from tqdm import tqdm
 from Bio import SeqIO
 import numpy as np
 
@@ -20,15 +21,18 @@ def cmd(indir, length, num, outdir):
     if outdir.endswith("/"):
         outdir = outdir[:-1]
 
-    for infile in infiles:
+    pbar = tqdm(infiles)
+    for infile in pbar:
+        pbar.set_description(infile)
         record = SeqIO.read(infile, file_format)
         digit = len(str(num))
-        positions = np.random.randint(0, len(record.seq) - length, (num))
-        for index, p in enumerate(positions):
-            contig = record.seq[p:p+length]
-            out_record = SeqRecord(contig)
-            out_record.id = record.id + str(index + 1).zfill(digit)
-            SeqIO.write(out_record, outdir + "/" + out_record.id + ".fna", file_format)
+        if len(record.seq) - length > 0:
+            positions = np.random.randint(0, len(record.seq) - length, (num))
+            for index, p in enumerate(positions):
+                contig = record.seq[p:p+length]
+                out_record = SeqRecord(contig)
+                out_record.id = record.id + "_len{0}.{1}".format(length, str(index + 1).zfill(digit))
+                SeqIO.write(out_record, outdir + "/{0}.fna".format(out_record.id), file_format)
 
 def main():
     cmd()
