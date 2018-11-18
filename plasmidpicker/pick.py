@@ -3,6 +3,7 @@
 from plasmidpicker.core import CGR
 from Bio import SeqIO
 from Bio.Seq import Seq
+from tqdm import tqdm
 from datetime import datetime
 import numpy as np
 import json
@@ -36,7 +37,17 @@ class Pick(CGR):
         with open("plasmids{0}.fna".format(nowtime), "w") as fpl, open("chromosomes{0}.fna".format(nowtime), "w") as fch, open("unassigned{0}.fna".format(nowtime), "w") as fun:
             file_format = "fasta"
             threshold *= 0.01
-            for record in SeqIO.parse(infile, file_format):
+            plasmid_num = 0
+            chromosome_num = 0
+            unassigned_num = 0
+
+            with open(infile, "r") as f:
+                total = sum([1 for line in f if line.startswith(">")])
+
+            pbar = tqdm(SeqIO.parse(infile, file_format), total=total)
+            for record in pbar:
+                pbar.set_description(record.id)
+
                 if len(record.seq) >= length:
                     self.add_seq(str(self.cat_with_reverse_complement(record.seq)))
                     cgr_array = self.get_cgr_array()
@@ -45,12 +56,19 @@ class Pick(CGR):
 
                     if probability >= threshold:
                         f = fpl
+                        plasmid_num += 1
                     elif probability <= (1 - threshold):
                         f = fch
+                        chromosome_num += 1
                     else:
                         f = fun
+                        unassigned_num += 1
 
                     SeqIO.write(record, f, file_format)
+
+            print("plasmid:", plasmid_num)
+            print("chromosome:", chromosome_num)
+            print("unassigned:", unassigned_num)
 
 
 if __name__ == "__main__":

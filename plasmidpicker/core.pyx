@@ -120,7 +120,7 @@ def kmerIter(str seq, int k_length):
 
 cdef class MinHash:
     cdef int sketch, k_length
-    def __cinit__(self, int sketch=1000, int k_length=16):
+    def __cinit__(self, int sketch=1000, int k_length=16, db_path=None):
         self.sketch = sketch
         self.k_length = k_length
 
