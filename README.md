@@ -1,4 +1,4 @@
-# PlasmidPicker
+![PlasmidPicker](./logo.png)
 
 ## Requirements
 - numpy
