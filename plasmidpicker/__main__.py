@@ -34,8 +34,8 @@ def identify(infile, sketch, outfile, length, kmer, hits, db):
         raise click.BadParameter("Please specify FASTA input file")
     if sketch < 1 or sketch > 1000:
         raise click.BadParameter("Sketch size (1 <= s <=1000) [1000]")
-    classifier = Identify(sketch, _k_length=kmer, db_path=db)
-    classifier.output_similarity(infile, outfile, hits)
+    identifier = Identify(sketch, k_length=kmer, db_path=db)
+    identifier.output_similarity(infile, outfile, hits)
 
 def main():
     cmd()

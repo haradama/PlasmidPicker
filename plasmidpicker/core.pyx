@@ -1,6 +1,6 @@
 # coding: utf-8
 
-from mmh3 import hash128
+from mmh3 import hash64
 import numpy as np
 cimport numpy as np
 import itertools
@@ -120,20 +120,20 @@ def kmerIter(str seq, int k_length):
 
 cdef class MinHash:
     cdef int sketch, k_length
-    def __cinit__(self, int _sketch=1000, int _k_length=16):
-        self.sketch = _sketch
-        self.k_length = _k_length
+    def __cinit__(self, int sketch=1000, int k_length=16, db_path=None):
+        self.sketch = sketch
+        self.k_length = k_length
 
-    cpdef np.ndarray[double, ndim=2] get_minhash_value(self, str seq):
+    cpdef np.ndarray[DTYPE_INT_t, ndim=1] get_minhash_value(self, str seq):
         cdef str kmer
         cdef int i, j, kmer_num
         kmer_num = len(seq) - (self.k_length - 1)
-        cdef np.ndarray[double, ndim=2] hash_matrix = np.empty((self.sketch, kmer_num), dtype=np.double)
+        cdef np.ndarray[DTYPE_INT_t, ndim=2] hash_matrix = np.empty((self.sketch, kmer_num), dtype=np.int)
 
         for i in range(kmer_num):
             kmer = seq[i:i+self.k_length]
-            for j in range(self.sketch):
-                hash_matrix[j, i] = hash128(kmer, j)
+            for j in range(0, self.sketch, 2):
+                hash_matrix[j, i], hash_matrix[j+1, i] = hash64(kmer, j)
 
         return hash_matrix.min(axis=1)
 

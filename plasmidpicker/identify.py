@@ -8,7 +8,7 @@ import h5py
 import os
 
 class Identify(MinHash):
-    def __init__(self, sketch, _k_length, db_path=None):
+    def __init__(self, sketch, k_length, db_path=None):
         MinHash.__init__(sketch)
         if db_path is None:
             db_path = os.path.dirname(__file__) + "/data/plasmids_hash.h5"
